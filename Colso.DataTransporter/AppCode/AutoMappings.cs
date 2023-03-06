@@ -56,5 +56,26 @@ namespace Colso.Xrm.DataTransporter.AppCode
 
             return autoMappings.ToArray();
         }
+        public static Item<EntityReference, EntityReference>[] GetOwnerTeamsMapping(IOrganizationService sourceService, IOrganizationService targetService)
+        {
+            var autoMappings = new List<Item<EntityReference, EntityReference>>();
+            var sourceTeams = sourceService.GetOwnerTeams();
+            var targetTeams = targetService.GetOwnerTeams();
+
+            foreach (var srcTeam in sourceTeams)
+            {
+                var teamName = srcTeam.GetAttributeValue<string>("name");
+                // Make sure we have a domain name
+                if (!string.IsNullOrEmpty(teamName))
+                {
+                    var tu = targetTeams.Where(u => u.GetAttributeValue<string>("name") == teamName).FirstOrDefault()?.ToEntityReference();
+                    // Do we have a target user?
+                    if (tu != null)
+                        autoMappings.Add(new Item<EntityReference, EntityReference>(srcTeam.ToEntityReference(), tu));
+                }
+            }
+
+            return autoMappings.ToArray();
+        }
     }
 }

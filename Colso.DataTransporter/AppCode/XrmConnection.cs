@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,6 +32,19 @@ namespace Colso.Xrm.DataTransporter.AppCode
                 return results.Entities[0].ToEntityReference();
 
             return null;
+        }
+
+        public static Entity[] GetOwnerTeams(this IOrganizationService service)
+        {
+            // Return non-Access (type 1) teams, this will include any teams tied to AAD groups.
+            var qry = new Microsoft.Xrm.Sdk.Query.QueryExpression("team");
+            qry.ColumnSet = new Microsoft.Xrm.Sdk.Query.ColumnSet("name");
+            qry.Criteria = new Microsoft.Xrm.Sdk.Query.FilterExpression();
+            qry.Criteria.AddCondition("teamtype", ConditionOperator.NotEqual, 1);
+
+            var results = service.RetrieveMultiple(qry);
+
+            return results.Entities.ToArray<Entity>();
         }
 
         public static Entity[] GetSystemUsers(this IOrganizationService service)

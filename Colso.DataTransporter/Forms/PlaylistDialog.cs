@@ -230,6 +230,10 @@ namespace Colso.DataTransporter.Forms
                 var sumapping = AutoMappings.GetSystemUsersMapping(sourceService, targetService);
                 if (sumapping != null) autoMappings.AddRange(sumapping);
 
+                OnStatusMessage?.Invoke(this, new StatusBarMessageEventArgs(1, "Retrieving team mappings..."));
+                var teammapping = AutoMappings.GetOwnerTeamsMapping(sourceService, targetService);
+                if (teammapping != null) autoMappings.AddRange(teammapping);
+
                 #endregion Auto-mappings
 
                 for (int i = 0; i < list.Items.Count; i++)

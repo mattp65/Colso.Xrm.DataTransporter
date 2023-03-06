@@ -878,6 +878,12 @@ namespace Colso.DataTransporter
                         var sumapping = AutoMappings.GetSystemUsersMapping(this.Service, targetService);
                         if (sumapping != null) autoMappings.AddRange(sumapping);
                     }
+                    if (cbTeamEntityReferences.Checked)
+                    {
+                        SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(1, "Retrieving team mappings..."));
+                        var teammapping = AutoMappings.GetOwnerTeamsMapping(this.Service, targetService);
+                        if (teammapping != null) autoMappings.AddRange(teammapping);
+                    }
 
                     for (int i = 0; i < entities.Count; i++)
                     {
